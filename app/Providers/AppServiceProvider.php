@@ -33,12 +33,18 @@ class AppServiceProvider extends ServiceProvider
         });
 
         User::created(function($user) {
-            Mail::to($user)->send(new UserCreated($user));
+            retry(5, function () use ($user) {
+                // Attempt 5 times while resting 100ms in between attempts...
+                Mail::to($user)->send(new UserCreated($user));
+            }, 100);
         });
 
         User::updated(function($user) {
             if($user->isDirty('email')){
-                Mail::to($user)->send(new UserMailChanged($user));
+                retry(5, function () use ($user) {
+                // Attempt 5 times while resting 100ms in between attempts...
+                Mail::to($user)->send(new UserCreated($user));
+                },100);
             }
         });
     }

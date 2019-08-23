@@ -82,4 +82,4 @@ Route::resource('users', 'User\userController', ['except' => ['create', 'edit']]
 
 // email verification
 
-Route::name('verify')->get('user/verify/{token}', 'User\userController@verify');
+Route::name('verify')->get('users/verify/{token}', 'User\userController@verify');
