@@ -79,7 +79,3 @@ Route::resource('categories.transactions', 'Category\CategoryTransactionsControl
 // User Route
 
 Route::resource('users', 'User\userController', ['except' => ['create', 'edit']]);
-
-// email verification
-
-Route::name('verify')->get('users/verify/{token}', 'User\userController@verify');

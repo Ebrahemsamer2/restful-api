@@ -85,6 +85,7 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
         // if Production release this Error
+
         return $this->errorResponse("Unexpected Exception Try Again Later", 500);
     }
 

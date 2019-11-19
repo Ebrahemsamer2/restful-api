@@ -40,14 +40,12 @@ class DatabaseSeeder extends Seeder
 
     	// run the factories
     	factory(User::class, $userQuantity)->create();
-    	
     	factory(Category::class, $categoriesQuantity)->create();
-    	
+
     	// attach every product with a category
     	factory(Product::class, $productsQuantity)->create()->each(function($product) {
 
     		$categories = Category::all()->random(mt_rand(1, 5))->pluck('id');
-    	
     		$product->categories()->attach($categories);
     	
     	});

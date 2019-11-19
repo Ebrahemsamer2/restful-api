@@ -7,17 +7,11 @@ use Illuminate\Database\Migrations\Migration;
 use App\Product;
 class AddProductsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+   
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
-            $table->bigIncrements('id')->unsigned();
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('description', 1000);
             $table->integer('quantity')->unsigned();

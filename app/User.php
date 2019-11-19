@@ -11,9 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
-
     use SoftDeletes;
-
 
     const VERIFIED_USER = 1;
     const UNVERIFIED_USER = 0;
@@ -22,27 +20,16 @@ class User extends Authenticatable implements MustVerifyEmail
     const REGULAR_USER = 'false';
 
     protected $table = 'users';
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $fillable = [
         'name',
         'email',
         'password',
-        'verified',
-        'verification_token',
         'admin',
     ];
 
     protected $dates = ['deleted_at'];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -54,14 +41,8 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function isVerified() {
-        return $this->verfied == User::VERIFIED_USER;
+        return $this->email_verified_at == User::VERIFIED_USER;
     }
-
-    public static function generateVerficationCode() {
-        return str_random(50);
-    }
-
-
 
     // Mutators
 
@@ -82,9 +63,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getEmailAttribute($email) {
         return ucwords($email);
     }
-
-
-
 
     protected $casts = [
         'email_verified_at' => 'datetime',

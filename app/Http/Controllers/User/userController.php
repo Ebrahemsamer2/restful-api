@@ -24,18 +24,19 @@ class userController extends ApiController
             'email'      => 'required|email|unique:users',
             'password'   => 'required|min:6|confirmed',
         ];
-            
-        // validate the user data
+
         $this->validate($request, $rules);
         $data = $request->all();
 
         $data['password'] = bcrypt($request->password);
-        $data['verified'] = User::UNVERIFIED_USER;
-        $data['verification_token'] = User::generateVerficationCode();
+        
         $data['admin'] = User::REGULAR_USER;
 
         $user = User::create($data);
-        return $this->showOne($user, 201);
+
+        return response()->json(['data' => $user], 200);
+
+        //return $this->showOne($user);
     }
 
     public function show(User $user)
@@ -56,9 +57,9 @@ class userController extends ApiController
         }
 
         if($request->has('email') && $request->email != $user->email) {
-            $user->verified = User::REGULAR_USER;
-            $user->verification_token = User::generateVerficationCode();
             $user->email = $request->email;
+            $user->email_verified_at = NULL;
+            // send new verification
         }
 
         if($request->has('password')) {
@@ -74,10 +75,10 @@ class userController extends ApiController
         }
         
         if(! $user->isDirty()) {
-            return $this->errorResponse('Only Admin Users can modify Admin Area', 'code', 422);
+            return $this->errorResponse('Nothing changed for this user', 'code', 422);
         }
-        $user->save();
 
+        $user->save();
         return $this->showOne($user);
     }
 

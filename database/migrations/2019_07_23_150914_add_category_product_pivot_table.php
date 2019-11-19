@@ -6,16 +6,10 @@ use Illuminate\Database\Migrations\Migration;
 
 class AddCategoryProductPivotTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up()
     {
         Schema::create('category_product', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->bigInteger('category_id')->unsigned();
             $table->bigInteger('product_id')->unsigned();
 
@@ -26,11 +20,6 @@ class AddCategoryProductPivotTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('category_product');
