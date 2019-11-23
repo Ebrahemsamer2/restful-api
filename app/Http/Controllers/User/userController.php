@@ -69,13 +69,13 @@ class userController extends ApiController
         if($request->has('admin')) {
 
             if(! $user->isVerified()) {
-                return $this->errorResponse('Only Admin Users can modify Admin Area', 'code', 409);
+                return $this->errorResponse('Only Admin Users can modify Admin Area', 409);
             }
             $user->admin = $request->admin;
         }
         
         if(! $user->isDirty()) {
-            return $this->errorResponse('Nothing changed for this user', 'code', 422);
+            return $this->errorResponse('Nothing changed for this user', 422);
         }
 
         $user->save();
@@ -87,16 +87,13 @@ class userController extends ApiController
         $user->delete();
         return $this->showOne($user);
     }
+    // public function verify($token) {
+    //     $user = User::where('verification_token', $token)->firstOrFail();
+    //     $user->verified = User::VERIFIED_USER;
+    //     $user->verification_token = null;
 
+    //     $user->save();
 
-    public function verify($token) {
-
-        $user = User::where('verification_token', $token)->firstOrFail();
-        $user->verified = User::VERIFIED_USER;
-        $user->verification_token = null;
-
-        $user->save();
-
-        return $this->showMessage("Email Verified Successfully");
-    }
+    //     return $this->showMessage("Email Verified Successfully");
+    // }
 }
