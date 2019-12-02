@@ -19,10 +19,10 @@ class categoryController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|min:2|max:20',
-            'description' => 'required|min:10' ,
+            'name' => 'required',
+            'description' => 'required',
         ];
-
+        
         $this->validate($request, $rules);
 
         $category = Category::create($request->all());
