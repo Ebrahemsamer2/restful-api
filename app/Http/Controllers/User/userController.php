@@ -4,7 +4,8 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\usercreated;
 use App\User;
 
 class userController extends ApiController
@@ -31,6 +32,8 @@ class userController extends ApiController
         $data['password'] = bcrypt($request->password);
         
         $data['admin'] = User::REGULAR_USER;
+        
+        $data['verification_token'] = User::generateVerificationCode();
 
         $user = User::create($data);
 
@@ -56,7 +59,9 @@ class userController extends ApiController
 
         if($request->has('email') && $request->email != $user->email) {
             $user->email = $request->email;
-            $user->email_verified_at = NULL;
+            $user->verified = 0;
+            $user->verification_token = User::generateVerificationCode();
+
             // send new verification
         }
 
@@ -85,5 +90,28 @@ class userController extends ApiController
         $user->delete();
         return $this->showOne($user);
     }
+
+    public function verify($token) {
+
+        $user = User::where('verification_token', $token)->firstOrFail();
+
+        $user->verified = User::VERIFIED_USER;
+        $user->verification_token = null;
+        $user->save();
+        return $this->showMessage('User successfully verified');
+    } 
+
+    public function resend(User $user) {
+
+        if($user->isVerified()) {
+            return $this->errorResponse('This user is already verified', 409);
+        }
+
+        retry(5, function() use ($user) {
+            Mail::to($user)->send(new usercreated($user));
+        }, 100);
+        
+        return $this->showMessage('verification token has been sent');
+    } 
 
 }

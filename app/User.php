@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable implements MustVerifyEmail
+use App\Transformers\UserTransformer;
+
+class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
@@ -18,7 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
-
+    public $transformer = UserTransformer::class;
     protected $table = 'users';
 
     protected $fillable = [
@@ -26,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'admin',
+        'verification_token',
     ];
 
     protected $dates = ['deleted_at'];
@@ -41,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function isVerified() {
-        return $this->email_verified_at == User::VERIFIED_USER;
+        return $this->verified == User::VERIFIED_USER;
     }
 
     // Mutators
@@ -67,4 +70,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function generateVerificationCode() {
+        return Str::random(40);
+    }
 }

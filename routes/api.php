@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-
-
 // Buyer Route
 
 Route::resource('buyers', 'Buyer\buyerController', ['only' => ['index', 'show']]);
@@ -79,3 +77,5 @@ Route::resource('categories.transactions', 'Category\CategoryTransactionsControl
 // User Route
 
 Route::resource('users', 'User\userController', ['except' => ['create', 'edit']]);
+Route::get('/users/verify/{token}', 'User\userController@verify');
+Route::get('/users/{user}/resend', 'User\userController@resend');

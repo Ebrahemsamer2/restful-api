@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Transformers\ProductTransformer;
 class Product extends Model
 {
 
@@ -13,6 +13,7 @@ class Product extends Model
 	const PRODUCT_AVAILABLE = 'available'; 
 	const PRODUCT_UNAVAILABLE = 'unavailable'; 
 
+    public $transformer = ProductTransformer::class;
     protected $fillable = [
     	'name',
     	'description',

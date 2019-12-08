@@ -34,6 +34,9 @@ class SellerProductsController extends ApiController
 
     	$data['status'] = Product::PRODUCT_UNAVAILABLE;
     	$data['seller_id'] = $seller->id;
+
+        // storing image in the server store('path', 'foldername(images)')
+
         $data['image'] = $request->image->store('');
 
     	$product = Product::create($data);
@@ -82,7 +85,8 @@ class SellerProductsController extends ApiController
 
     public function destroy(Seller $seller, Product $product) {
     	$this->checkSeller($seller, $product);
-
+        
+        // you can use unlink()
         Storage::delete($product->image);
 
     	$product->delete();

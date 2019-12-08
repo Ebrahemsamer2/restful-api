@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Mail;
 
+use App\Mail\usercreated;
+use App\Mail\userupdated;
 use App\Product;
-use App\User;;
+use App\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,20 +32,18 @@ class AppServiceProvider extends ServiceProvider
 
         });
 
-        // User::created(function($user) {
-        //     retry(5, function () use ($user) {
-        //         // Attempt 5 times while resting 100ms in between attempts...
-        //         Mail::to($user)->send(new UserCreated($user));
-        //     }, 100);
-        // });
+        User::created(function($user) {
+            retry(5, function() use ($user) {
+                Mail::to($user)->send(new usercreated($user));
+            }, 100);
+        });
 
-        // User::updated(function($user) {
-        //     if($user->isDirty('email')){
-        //         retry(5, function () use ($user) {
-        //         // Attempt 5 times while resting 100ms in between attempts...
-        //         Mail::to($user)->send(new UserCreated($user));
-        //         },100);
-        //     }
-        // });
+        User::updated(function($user) {
+            if($user->isDirty('email')) {
+                retry(5, function() use ($user) {
+                    Mail::to($user)->send(new userupdated($user));
+                }, 100);
+            }
+        });
     }
 }
